@@ -1,0 +1,36 @@
+name: On Commit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  flip:
+    name: Flip the lights!
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          if [ -f Gopkg.toml ]; then
+              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+              dep ensure
+          fi
+
+      - name: Run main.go
+        env:
+          P4L_DEVICE_ID: ${{secrets.P4L_DEVICE_ID}}
+          P4L_ACCESS_ID: ${{secrets.P4L_ACCESS_ID}}
+          P4L_ACCESS_SECRET: ${{secrets.P4L_ACCESS_SECRET}}
+        run: go run main.go

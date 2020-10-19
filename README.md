@@ -1,4 +1,4 @@
-# Git Lit
+# Git Lit 💡
 
 A proof-of-concept project to interact with Tuya smart-lights from Github Actions.
 
